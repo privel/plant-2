@@ -79,6 +79,10 @@ export default function App() {
           alignItems: "center",
           elevation: 4,
         }}
+        onPress={() => {
+          console.log("Кнопка + нажата");
+        
+        }}
       >
         <Ionicons name="add" size={30} color="white" />
       </TouchableOpacity>
