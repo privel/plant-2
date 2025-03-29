@@ -134,26 +134,6 @@ export default function App() {
         style={{
           position: "absolute",
           bottom: 20,
-          right: 20,
-          backgroundColor: "#7CA982",
-          width: 50,
-          height: 50,
-          borderRadius: 25,
-          justifyContent: "center",
-          alignItems: "center",
-          elevation: 4,
-        }}
-        onPress={() => {
-          console.log("Кнопка + нажата");
-        }}
-      >
-        <Ionicons name="add" size={30} color="white" />
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={{
-          position: "absolute",
-          bottom: 20,
           left: 20,
           backgroundColor: "#4A90E2",
           width: 50,
