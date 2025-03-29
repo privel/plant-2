@@ -1,8 +1,10 @@
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
 
 const Layout = () => {
+  const router = useRouter();  
+
   return (
     <Stack
       screenOptions={{
@@ -13,6 +15,7 @@ const Layout = () => {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
+
       }}
     >
       <Stack.Screen

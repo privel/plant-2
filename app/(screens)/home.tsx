@@ -174,6 +174,7 @@ useEffect(() => {
         style={{
           position: "absolute",
           bottom: 20,
+
           right: 20,
           backgroundColor: "#7CA982",
           width: 50,
