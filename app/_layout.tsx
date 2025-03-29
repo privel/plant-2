@@ -1,39 +1,54 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { Stack, useRouter, useSegments } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { initializeApp } from 'firebase/app';
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
+import { View, ActivityIndicator } from 'react-native';
+import {firebaseConfig} from "../constants/firebaseConfig";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+// Initialize Firebase only once
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
+  const segments = useSegments();
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+      if (initializing) setInitializing(false);
+    });
 
-  if (!loaded) {
-    return null;
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    if (initializing) return;
+
+    const inAuthGroup = segments[0] === '(auth)';
+
+    if (user && !inAuthGroup) {
+      router.replace('/(auth)/home');
+    } else if (!user && inAuthGroup) {
+      router.replace('/');
+    }
+  }, [user, initializing]);
+
+  if (initializing) {
+    return (
+      <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Stack>
+      <Stack.Screen name="index" options={{ title: 'Login' }} />
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+    </Stack>
   );
 }
