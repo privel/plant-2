@@ -1,10 +1,15 @@
-
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, FlatList, TouchableOpacity, Button } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCpCsRVG22_qdQ_7EoY4iw2AwmbXcEgjjY",
@@ -24,7 +29,6 @@ const plants = [
 ];
 
 export default function App() {
-  
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -36,20 +40,23 @@ export default function App() {
   }, []);
 
   return (
-    <LinearGradient colors={["#CBD5B1", "#F9F9F9"]} style={{ flex: 1, padding: 20 }}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Ionicons name="sunny" size={24} color="#FACC15" />
-          <Text style={{ marginLeft: 5, fontSize: 18, fontWeight: "bold" }}>72°</Text>
-        </View>
-        <Ionicons name="search" size={24} color="#333" />
-      </View>
-
-      <Text style={{ fontSize: 24, fontWeight: "bold", marginVertical: 20 }}>My Beds</Text>
-
+    <LinearGradient colors={["#CBD5B1", "#F9F9F9"]} style={{ flex: 1 }}>
       <FlatList
         data={plants}
         keyExtractor={(item) => item.id}
+        contentContainerStyle={{ padding: 20, paddingBottom: 100 }}
+        ListHeaderComponent={() => (
+          <>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Ionicons name="sunny" size={24} color="#FACC15" />
+                <Text style={{ marginLeft: 5, fontSize: 18, fontWeight: "bold" }}>72°</Text>
+              </View>
+            </View>
+
+            <Text style={{ fontSize: 24, fontWeight: "bold", marginVertical: 20 }}>My Beds</Text>
+          </>
+        )}
         renderItem={({ item }) => (
           <View style={{ backgroundColor: "white", borderRadius: 15, marginBottom: 15, padding: 10 }}>
             <Image source={item.image} style={{ width: "100%", height: 120, borderRadius: 10 }} />
@@ -59,11 +66,20 @@ export default function App() {
         )}
       />
 
-      <TouchableOpacity style={{
-        position: "absolute", bottom: 20, right: 20,
-        backgroundColor: "#7CA982", width: 50, height: 50,
-        borderRadius: 25, justifyContent: "center", alignItems: "center"
-      }}>
+      <TouchableOpacity
+        style={{
+          position: "absolute",
+          bottom: 20,
+          right: 20,
+          backgroundColor: "#7CA982",
+          width: 50,
+          height: 50,
+          borderRadius: 25,
+          justifyContent: "center",
+          alignItems: "center",
+          elevation: 4,
+        }}
+      >
         <Ionicons name="add" size={30} color="white" />
       </TouchableOpacity>
     </LinearGradient>
