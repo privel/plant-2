@@ -1,8 +1,10 @@
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 const Layout = () => {
+  const router = useRouter();  
+
   return (
     <Stack
       screenOptions={{
@@ -14,13 +16,8 @@ const Layout = () => {
           fontWeight: 'bold',
         },
         headerLeft: () => (
-          <TouchableOpacity onPress={() => alert('Профиль')} style={{ marginLeft: 15 }}>
+          <TouchableOpacity onPress={() => router.push('/profile')} style={{ marginLeft: 15 }}>
             <Ionicons name="person-circle-outline" size={26} color="#3a5f3a" />
-          </TouchableOpacity>
-        ),
-        headerRight: () => (
-          <TouchableOpacity onPress={() => alert('Поиск')} style={{ marginRight: 15 }}>
-            <Ionicons name="search-outline" size={24} color="#3a5f3a" />
           </TouchableOpacity>
         ),
       }}
