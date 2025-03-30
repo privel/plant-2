@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  Image,
   TouchableOpacity,
   TextInput,
   TouchableWithoutFeedback,
@@ -12,7 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getAuth, signOut } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc, collection, addDoc } from 'firebase/firestore';
 import { useRouter } from 'expo-router';
 
 const ProfileScreen = () => {
@@ -43,6 +42,13 @@ const ProfileScreen = () => {
     if (!uid) return;
 
     try {
+      // Save old name to history
+      await addDoc(collection(db, 'users', uid, 'nameHistory'), {
+        oldName: name,
+        timestamp: new Date(),
+      });
+
+      // Update current name
       await setDoc(
         doc(db, 'users', uid),
         {
@@ -100,23 +106,21 @@ const ProfileScreen = () => {
   return (
     <View style={{ flex: 1, backgroundColor: '#F7F6F2', padding: 20 }}>
       <View style={{ alignItems: 'center', marginBottom: 20 }}>
-      <View
-  style={{
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 3,
-    borderColor: '#3a5f3a',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  }}
->
-  <Ionicons name="person-outline" size={80} color="#3a5f3a" />
-</View>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#3a5f3a', marginTop: 10 }}>
-          {name}
-        </Text>
+        <View
+          style={{
+            width: 100,
+            height: 100,
+            borderRadius: 50,
+            borderWidth: 3,
+            borderColor: '#3a5f3a',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#fff',
+          }}
+        >
+          <Ionicons name="person-outline" size={80} color="#3a5f3a" />
+        </View>
+        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#3a5f3a', marginTop: 10 }}>{name}</Text>
         <Text style={{ fontSize: 16, color: '#6B6B6B' }}>{email}</Text>
 
         <TouchableOpacity
@@ -143,7 +147,10 @@ const ProfileScreen = () => {
       </View>
 
       <View style={{ backgroundColor: '#fff', borderRadius: 20, padding: 15, marginBottom: 10 }}>
-        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
+        <TouchableOpacity
+          onPress={() => router.push('/HistoryScreen')}
+          style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}
+        >
           <Ionicons name="leaf-outline" size={24} color="#3a5f3a" />
           <Text style={{ marginLeft: 15, fontSize: 16, color: '#3a5f3a' }}>History</Text>
         </TouchableOpacity>
@@ -166,7 +173,6 @@ const ProfileScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Animated Modal */}
       {isModalVisible && (
         <Animated.View
           style={{
