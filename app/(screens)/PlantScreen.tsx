@@ -13,42 +13,38 @@ import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 
-
-const seedOptions: { name: string; image: any; description: string; route: 
-  "/ListofPlants/Sunflower" | "/ListofPlants/Cress" | "/ListofPlants/Mint" | "/ListofPlants/Bazilik" | "/ListofPlants/Goroh" }[] = [
-    {
-      name: "Sunflower",
-      image: require("../../assets/sunflower.jpg"),
-      description: "Солнечник — растение, которое любит свет и приносит радость.",
-      route: "/ListofPlants/Sunflower",
-    },
-    {
-      name: "Cress",
-      image: require("../../assets/cress.jpg"),
-      description: "Редис — быстрорастущее растение с острым вкусом.",
-      route: "/ListofPlants/Cress",
-    },
-    {
-      name: "Mint",
-      image: require("../../assets/mint.jpeg"),
-      description: "Мята — ароматное растение, освежающее и полезное.",
-      route: "/ListofPlants/Mint",
-    },
-    {
-      name: "Pea",
-      image: require("../../assets/goroh.jpeg"),
-      description: "Горох — бобовое растение, богатое белком и витаминами.",
-      route: "/ListofPlants/Goroh",
-    },
-    {
-      name: "Basil",
-      image: require("../../assets/bazilik.jpg"),
-      description: "Базилик — пряное растение с насыщенным ароматом, популярное в кулинарии.",
-      route: "/ListofPlants/Bazilik",
-    },
-  ];
-  
-
+const seedOptions = [
+  {
+    name: "Sunflower",
+    image: require("../../assets/sunflower.jpg"),
+    description: "Солнечник — растение, которое любит свет и приносит радость.",
+    route: "/ListofPlants/Sunflower",
+  },
+  {
+    name: "Cress",
+    image: require("../../assets/cress.jpg"),
+    description: "Кресс-салат — быстрорастущее растение с пикантным вкусом.",
+    route: "/ListofPlants/Cress",
+  },
+  {
+    name: "Mint",
+    image: require("../../assets/mint.jpeg"),
+    description: "Мята — ароматное растение, освежающее и полезное.",
+    route: "/ListofPlants/Mint",
+  },
+  {
+    name: "Pea",
+    image: require("../../assets/goroh.jpeg"),
+    description: "Горох — бобовое растение, богатое белком и витаминами.",
+    route: "/ListofPlants/Goroh",
+  },
+  {
+    name: "Basil",
+    image: require("../../assets/bazilik.jpg"),
+    description: "Базилик — пряное растение с насыщенным ароматом, популярное в кулинарии.",
+    route: "/ListofPlants/Bazilik",
+  },
+];
 
 export default function PlantScreen() {
   const [user, setUser] = useState<User | null>(null);
@@ -72,13 +68,13 @@ export default function PlantScreen() {
     return unsubscribe;
   }, []);
 
-  const handlePlant = async (plant: any) => {
+  const handlePlant = async (plant: { name: string; image: any }) => {
     if (!user) return;
     if (availableSeeds < 1) {
-      Alert.alert("No seeds", "Replenish your seed supply to plant a plant.");
+      Alert.alert("Нет семян", "Пополните запас семян, чтобы посадить растение.");
       return;
     }
-  
+
     const newPlant = {
       id: Date.now().toString(),
       name: plant.name,
@@ -86,34 +82,29 @@ export default function PlantScreen() {
       image: plant.image,
       userId: user.uid,
     };
-  
+
     // Сохраняем локально
     const storedPlants = await AsyncStorage.getItem("plants");
     const plants = storedPlants ? JSON.parse(storedPlants) : [];
     const updatedPlants = [...plants, newPlant];
     await AsyncStorage.setItem("plants", JSON.stringify(updatedPlants));
-  
+
     // Обновляем семена в Firestore
     const db = getFirestore();
     await updateDoc(doc(db, "users", user.uid), {
       seeds: availableSeeds - 1,
     });
-  
-    // Обновляем локальное состояние и переходим на главную
+
     setAvailableSeeds((prev) => prev - 1);
-    Alert.alert("Successfully", `${plant.name} planted! 🌱`);
-  
-    router.replace("/(screens)/home"); // Перенаправление на главный экран
+    Alert.alert("Успешно!", `${plant.name} посажен! 🌱`);
+
+    router.push("/home");
   };
-  
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Available plants</Text>
-      <Text style={styles.seeds}>Seeds: {availableSeeds}</Text>
-
-
-      
+      <Text style={styles.title}>Доступные растения</Text>
+      <Text style={styles.seeds}>Семена: {availableSeeds}</Text>
 
       <FlatList
         data={seedOptions}
@@ -121,35 +112,17 @@ export default function PlantScreen() {
         contentContainerStyle={{ padding: 20 }}
         renderItem={({ item }) => (
           <View style={styles.card}>
-
-            <Image source={item.image} style={styles.image} />
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.description}>{item.description}</Text>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => handlePlant(item)}
-            >
-
-             
-            <TouchableOpacity
-              onPress={() => router.push(item.route as any)}
-
-            >
+            <TouchableOpacity onPress={() => router.push(item.route as any)}>
               <Image source={item.image} style={styles.image} />
             </TouchableOpacity>
-
             <Text style={styles.name}>{item.name}</Text>
             <Text style={styles.description}>{item.description}</Text>
-            
             <TouchableOpacity style={styles.button} onPress={() => handlePlant(item)}>
-
-              <Text style={styles.buttonText}>Planting</Text>
+              <Text style={styles.buttonText}>Посадить</Text>
             </TouchableOpacity>
           </View>
         )}
       />
-
-
     </View>
   );
 }
@@ -198,17 +171,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 25,
     borderRadius: 10,
+    marginTop: 10,
   },
   buttonText: {
     color: "#fff",
     fontWeight: "bold",
-  },
-  backButton: {
-    marginBottom: 30,
-    alignItems: "center",
-  },
-  backText: {
-    color: "#4a90e2",
-    fontSize: 16,
   },
 });

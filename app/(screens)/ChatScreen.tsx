@@ -17,7 +17,7 @@
 
 
 
-// const OPENAI_API_KEY = ""; // 🔴 Замени на свой API-ключ
+// const OPENAI_API_KEY = "";  
 
 // const getAIResponse = async (message: string) => {
 //   try {
