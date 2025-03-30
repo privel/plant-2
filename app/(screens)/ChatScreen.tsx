@@ -12,7 +12,12 @@
 //   Keyboard,
 // } from "react-native";
 // import { Ionicons } from "@expo/vector-icons";
+
 // 
+
+
+
+// const OPENAI_API_KEY = ""; // 🔴 Замени на свой API-ключ
 
 // const getAIResponse = async (message: string) => {
 //   try {
