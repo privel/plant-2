@@ -27,11 +27,7 @@ const Layout = () => {
               <Ionicons name="person-circle-outline" size={26} color="#3a5f3a" />
             </TouchableOpacity>
           ),
-          headerRight: () => (
-            <TouchableOpacity onPress={() => alert("Поиск")} style={{ marginRight: 15 }}>
-              <Ionicons name="search-outline" size={24} color="#3a5f3a" />
-            </TouchableOpacity>
-          ),
+          
         }}
       />
 
