@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Dimensions, Image, StyleSheet } from "react-native";
+import { View, Text, Dimensions, Image, StyleSheet, Alert } from "react-native";
 import { PanGestureHandler, GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing, runOnJS } from "react-native-reanimated";
+import { getAuth } from "firebase/auth";
+import { getFirestore, doc, updateDoc, getDoc } from "firebase/firestore";
 
 const { width, height } = Dimensions.get("window");
 const ICON_COUNT = 5; 
@@ -9,7 +11,10 @@ const potSize = 80;
 const iconSize = 40;  
 const potY = height - 100;  
 
- const iconImages = [
+const db = getFirestore();
+const auth = getAuth();
+
+const iconImages = [
   require("../../assets/images/flower.png"),
   require("../../assets/images/flower2.png"),
   require("../../assets/images/flower3.png"),
@@ -25,30 +30,51 @@ const FallingIcon: React.FC<{ icon: IconProps; potX: Animated.SharedValue<number
 }) => {
   const position = useSharedValue(-50);
   const opacity = useSharedValue(1);  
+  const isCaught = useSharedValue(false);
 
   useEffect(() => {
     position.value = withTiming(
-      potY,
+      potY - iconSize,
       { duration: icon.speed, easing: Easing.linear },
-      () => {
-         const potLeft = potX.value;
-        const potRight = potLeft + potSize;
-        const iconLeft = icon.left;
-        const iconRight = icon.left + iconSize;
-
-        if (iconRight > potLeft && iconLeft < potRight) {
-        
-          opacity.value = withTiming(0, { duration: 300 }, () => {
-            runOnJS(onCatch)(icon.id); 
-          });
-        } else {
-      
-          opacity.value = withTiming(0, { duration: 300 }, () => {
-            runOnJS(onMiss)(icon.id);  
-          });
+      (finished) => {
+        if (finished && !isCaught.value) {
+          const potLeft = potX.value;
+          const potRight = potLeft + potSize;
+          const iconLeft = icon.left;
+          const iconRight = icon.left + iconSize;
+  
+          if (iconRight > potLeft && iconLeft < potRight) {
+            isCaught.value = true;
+            opacity.value = withTiming(0, { duration: 200 }, () => {
+              runOnJS(onCatch)(icon.id);
+            });
+          } else {
+            runOnJS(onMiss)(icon.id);
+          }
         }
       }
     );
+  }, []);
+  
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const potLeft = potX.value;
+      const potRight = potLeft + potSize;
+      const iconLeft = icon.left;
+      const iconRight = icon.left + iconSize;
+
+      if (!isCaught.value && position.value >= potY - iconSize) {
+        if (iconRight > potLeft && iconLeft < potRight) {
+          isCaught.value = true;
+          opacity.value = withTiming(0, { duration: 200 }, () => {
+            runOnJS(onCatch)(icon.id);
+          });
+        }
+      }
+    }, 50);
+
+    return () => clearInterval(interval);
   }, []);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -86,8 +112,26 @@ export default function MovePotGame() {
     return () => clearInterval(interval);
   }, [icons]);
 
+  const saveSeedToFirestore = async () => {
+    const user = auth.currentUser;
+    if (!user) return;
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+    const userData = userSnap.data();
+    const currentSeeds = userData?.seeds ?? 0;
+    await updateDoc(userRef, { seeds: currentSeeds + 1 });
+    Alert.alert("Поздравляем!", "Вы заработали 1 семечко 🌱");
+  };
+
   const onCatch = (id: number) => {
-    setScore((prev) => prev + 1); 
+    setScore((prev) => {
+      const newScore = prev + 1;
+      if (newScore >= 5) {
+        saveSeedToFirestore();
+        return 0;
+      }
+      return newScore;
+    }); 
     setIcons((prev) => prev.filter((icon) => icon.id !== id));  
   };
 
@@ -117,7 +161,7 @@ export default function MovePotGame() {
             <FallingIcon key={icon.id} icon={icon} potX={potX} onCatch={onCatch} onMiss={onMiss} />
           ))}
 
-          <Animated.View style={[{ position: "absolute", bottom: 50, left: 0 }, animatedPotStyle]}>
+          <Animated.View style={[{ position: "absolute", bottom: 30, left: 0 }, animatedPotStyle]}>
             <Image source={require("../../assets/images/gorshok.png")} style={{ width: potSize, height: potSize }} resizeMode="contain" />
           </Animated.View>
         </View>

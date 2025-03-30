@@ -9,7 +9,7 @@ import {
   Alert,
 } from "react-native";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
-import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, updateDoc, addDoc, collection } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 
@@ -74,31 +74,43 @@ export default function PlantScreen() {
       Alert.alert("No seeds", "Replenish your seed supply to plant a plant.");
       return;
     }
-
-    const newPlant = {
-      id: Date.now().toString(),
+  
+    const db = getFirestore();
+    const newPlantData = {
       name: plant.name,
-      date: new Date().toDateString(),
-      image: plant.image,
+      seedDate: new Date().toISOString().split("T")[0],
+      comment: "",
       userId: user.uid,
     };
-
-    // Сохраняем локально
+  
+    // 1. Сохраняем в Firestore
+    const docRef = await addDoc(collection(db, "plants"), newPlantData);
+    const plantId = docRef.id;
+  
+    // 2. Сохраняем в AsyncStorage для совместимости с текущим HomeScreen (можно позже убрать)
     const storedPlants = await AsyncStorage.getItem("plants");
     const plants = storedPlants ? JSON.parse(storedPlants) : [];
-    const updatedPlants = [...plants, newPlant];
+    const updatedPlants = [
+      ...plants,
+      {
+        ...newPlantData,
+        id: plantId,
+        image: plant.image,
+        date: new Date().toDateString(),
+      },
+    ];
     await AsyncStorage.setItem("plants", JSON.stringify(updatedPlants));
-
-    // Обновляем семена в Firestore
-    const db = getFirestore();
+  
+    // 3. Обновляем количество семян
     await updateDoc(doc(db, "users", user.uid), {
       seeds: availableSeeds - 1,
     });
-
+  
     setAvailableSeeds((prev) => prev - 1);
-    Alert.alert("Successfully!", `${plant.name} planted! 🌱`);
-
-    router.push("/home");
+    Alert.alert("Успешно!", `${plant.name} посажено! 🌱`);
+  
+    // 4. Переход на GameScreen с новым plantId
+    router.push({ pathname: "/game/GameScreen", params: { plantId } });
   };
 
   return (

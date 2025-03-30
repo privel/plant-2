@@ -128,9 +128,16 @@ export default function HomeScreen() {
        
       <FlatList
         data={plants}
-        keyExtractor={(item) => item.id}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} colors={["#7CA982"]} />}
-        contentContainerStyle={{ padding: 20, paddingBottom: 100 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={["#4CAF50"]}
+            tintColor="#4CAF50"
+            progressBackgroundColor="#E6F4EA"
+          />
+        }
+        keyExtractor={(item) => item.id}contentContainerStyle={{ padding: 20, paddingBottom: 100 }}
         ListHeaderComponent={() => (
           <>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
@@ -141,7 +148,7 @@ export default function HomeScreen() {
           </>
         )}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => router.push({ pathname: "/game", params: { plantId: item.id } })}
+          <TouchableOpacity onPress={() => router.push({ pathname: "/game/GameScreen", params: { plantId: item.id } })}
             style={styles.plantCard}>
             {item.image && <Image source={item.image} style={styles.plantImage} />}
             <Text style={styles.plantName}>{item.name}</Text>
@@ -177,6 +184,10 @@ const getImageForPlant = (name: string) => {
       return require("../../assets/cress.jpg");
     case "Mint":
       return require("../../assets/mint.jpeg");
+    case "Pea":
+      return require("../../assets/goroh.jpeg");
+    case "Basil":
+      return require("../../assets/bazilik.jpg");
     default:
       return null;
   }
