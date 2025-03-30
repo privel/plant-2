@@ -13,23 +13,40 @@ import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 
-const seedOptions = [
-  {
-    name: "Sunflower",
-    image: require("../../assets/sunflower.jpg"),
-    description: "Солнечник — растение, которое любит свет и приносит радость.",
-  },
-  {
-    name: "Radish",
-    image: require("../../assets/cress.jpg"),
-    description: "Редис — быстрорастущее растение с острым вкусом.",
-  },
-  {
-    name: "Mint",
-    image: require("../../assets/mint.jpeg"),
-    description: "Мята — ароматное растение, освежающее и полезное.",
-  },
-];
+const seedOptions: { name: string; image: any; description: string; route: 
+  "/ListofPlants/Sunflower" | "/ListofPlants/Cress" | "/ListofPlants/Mint" | "/ListofPlants/Bazilik" | "/ListofPlants/Goroh" }[] = [
+    {
+      name: "Sunflower",
+      image: require("../../assets/sunflower.jpg"),
+      description: "Солнечник — растение, которое любит свет и приносит радость.",
+      route: "/ListofPlants/Sunflower",
+    },
+    {
+      name: "Cress",
+      image: require("../../assets/cress.jpg"),
+      description: "Редис — быстрорастущее растение с острым вкусом.",
+      route: "/ListofPlants/Cress",
+    },
+    {
+      name: "Mint",
+      image: require("../../assets/mint.jpeg"),
+      description: "Мята — ароматное растение, освежающее и полезное.",
+      route: "/ListofPlants/Mint",
+    },
+    {
+      name: "Pea",
+      image: require("../../assets/goroh.jpeg"),
+      description: "Горох — бобовое растение, богатое белком и витаминами.",
+      route: "/ListofPlants/Goroh",
+    },
+    {
+      name: "Basil",
+      image: require("../../assets/bazilik.jpg"),
+      description: "Базилик — пряное растение с насыщенным ароматом, популярное в кулинарии.",
+      route: "/ListofPlants/Bazilik",
+    },
+  ];
+  
 
 export default function PlantScreen() {
   const [user, setUser] = useState<User | null>(null);
@@ -92,25 +109,30 @@ export default function PlantScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Available plants</Text>
       <Text style={styles.seeds}>Seeds: {availableSeeds}</Text>
+      
       <FlatList
         data={seedOptions}
         keyExtractor={(item) => item.name}
         contentContainerStyle={{ padding: 20 }}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <Image source={item.image} style={styles.image} />
+             
+            <TouchableOpacity
+              onPress={() => router.push(item.route as any)}
+
+            >
+              <Image source={item.image} style={styles.image} />
+            </TouchableOpacity>
+
             <Text style={styles.name}>{item.name}</Text>
             <Text style={styles.description}>{item.description}</Text>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => handlePlant(item)}
-            >
+            
+            <TouchableOpacity style={styles.button} onPress={() => handlePlant(item)}>
               <Text style={styles.buttonText}>Planting</Text>
             </TouchableOpacity>
           </View>
         )}
       />
-      
     </View>
   );
 }
