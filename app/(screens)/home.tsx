@@ -188,7 +188,7 @@ export default function HomeScreen() {
             >
               {item.image && <Image source={item.image} style={styles.plantImage} />}
               <Text style={styles.plantName}>{item.name}</Text>
-              <Text style={styles.plantDate}>The record has been created   <Text style={{fontWeight: "bold",}}>{item.date}</Text></Text>
+              <Text style={styles.plantDate}>Sowed  <Text style={{fontWeight: "bold",}}>{item.date}</Text></Text>
             </TouchableOpacity>
           )}
         />
