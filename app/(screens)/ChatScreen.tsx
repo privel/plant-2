@@ -17,7 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 
 
-const OPENAI_API_KEY = "";  
+const OPENAI_API_KEY = ""; //Add your key from OPENAI - sk_proj  
 
 const getAIResponse = async (message: string) => {
   try {
