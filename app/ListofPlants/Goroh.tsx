@@ -4,14 +4,10 @@ import { View, Text, Image, ScrollView, StyleSheet } from "react-native";
 export default function PeaScreen() {
   return (
     <ScrollView style={styles.container}>
-      {/* Изображение */}
       <Image source={require("../../assets/goroh.jpeg")} style={styles.image} />
-
-      {/* Название */}
       <Text style={styles.title}>🌱 Pea Plant</Text>
       <Text style={styles.subtitle}>Горох — быстрорастущее растение, богатое белком.</Text>
 
-      {/* Описание */}
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>🌿 Описание</Text>
         <Text style={styles.description}>
@@ -20,7 +16,6 @@ export default function PeaScreen() {
         </Text>
       </View>
 
-      {/* Требования для ухода */}
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>💡 Условия для роста</Text>
         <Text style={styles.requirement}>☀️ Свет: Полутень или яркий солнечный свет</Text>
@@ -29,7 +24,6 @@ export default function PeaScreen() {
         <Text style={styles.requirement}>🪴 Почва: Легкая, влажная, богатая органикой</Text>
       </View>
 
-      {/* Состояние растения (визуальные индикаторы) */}
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>📊 Состояние растения</Text>
         <StatusBar label="💧 Вода" value={65} />
@@ -37,7 +31,6 @@ export default function PeaScreen() {
         <StatusBar label="❤️ Здоровье" value={90} />
       </View>
 
-      {/* Интересный факт */}
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>✨ Интересный факт</Text>
         <Text style={styles.description}>
@@ -49,7 +42,6 @@ export default function PeaScreen() {
   );
 }
 
-// Компонент индикатора состояния
 const StatusBar = ({ label, value }) => {
   return (
     <View style={styles.statusRow}>
@@ -62,7 +54,6 @@ const StatusBar = ({ label, value }) => {
   );
 };
 
-// Стили
 const styles = StyleSheet.create({
   container: {
     flex: 1,

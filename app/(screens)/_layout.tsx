@@ -60,7 +60,20 @@ const Layout = () => {
           headerRight: () => null,
         }}
       />
+      <Stack.Screen
+        name="/FunGame/Base"
+        options={{
+          title: "Game",
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()} style={{ marginLeft: 15 }}>
+              <Ionicons name="arrow-back" size={24} color="#3a5f3a" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => null,
+        }}
+      />
     </Stack>
+    
   );
 };
 

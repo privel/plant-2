@@ -150,13 +150,20 @@ export default function HomeScreen() {
         )}
       />
 
-       
+ 
       <TouchableOpacity style={styles.addButton} onPress={() => router.push("/PlantScreen")}>
         <Ionicons name="add" size={30} color="white" />
       </TouchableOpacity>
+
+      <TouchableOpacity style={styles.playButton} onPress={() => router.push("/FunGame/Base")}>
+        <Text style={styles.playText}>PLAY</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity style={styles.chatButton} onPress={() => router.push("/ChatScreen")}>
         <Ionicons name="chatbubbles" size={30} color="white" />
       </TouchableOpacity>
+     
+
     </LinearGradient>
   );
 }
@@ -252,5 +259,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     elevation: 4,
   },
+  playButton: {
+    position: "absolute",
+    bottom: 20,
+    alignSelf: "center",
+    backgroundColor: "#4CAF50",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    elevation: 4,
+  },
+  playText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  
 });
 
