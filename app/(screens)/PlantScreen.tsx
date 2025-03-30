@@ -17,31 +17,31 @@ const seedOptions = [
   {
     name: "Sunflower",
     image: require("../../assets/sunflower.jpg"),
-    description: "Солнечник — растение, которое любит свет и приносит радость.",
+    description: "A sunflower is a plant that loves light and brings joy.",
     route: "/ListofPlants/Sunflower",
   },
   {
     name: "Cress",
     image: require("../../assets/cress.jpg"),
-    description: "Кресс-салат — быстрорастущее растение с пикантным вкусом.",
+    description: "Watercress is a fast—growing plant with a piquant taste.",
     route: "/ListofPlants/Cress",
   },
   {
     name: "Mint",
     image: require("../../assets/mint.jpeg"),
-    description: "Мята — ароматное растение, освежающее и полезное.",
+    description: "Mint is a fragrant plant, refreshing and healthy.",
     route: "/ListofPlants/Mint",
   },
   {
     name: "Pea",
     image: require("../../assets/goroh.jpeg"),
-    description: "Горох — бобовое растение, богатое белком и витаминами.",
+    description: "Peas are a legume plant rich in protein and vitamins.",
     route: "/ListofPlants/Goroh",
   },
   {
     name: "Basil",
     image: require("../../assets/bazilik.jpg"),
-    description: "Базилик — пряное растение с насыщенным ароматом, популярное в кулинарии.",
+    description: "Basil is a spicy plant with a rich aroma, popular in cooking.",
     route: "/ListofPlants/Bazilik",
   },
 ];
@@ -71,7 +71,7 @@ export default function PlantScreen() {
   const handlePlant = async (plant: { name: string; image: any }) => {
     if (!user) return;
     if (availableSeeds < 1) {
-      Alert.alert("Нет семян", "Пополните запас семян, чтобы посадить растение.");
+      Alert.alert("No seeds", "Replenish your seed supply to plant a plant.");
       return;
     }
 
@@ -96,15 +96,15 @@ export default function PlantScreen() {
     });
 
     setAvailableSeeds((prev) => prev - 1);
-    Alert.alert("Успешно!", `${plant.name} посажен! 🌱`);
+    Alert.alert("Successfully!", `${plant.name} planted! 🌱`);
 
     router.push("/home");
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Доступные растения</Text>
-      <Text style={styles.seeds}>Семена: {availableSeeds}</Text>
+      <Text style={styles.title}>Available Plants</Text>
+      <Text style={styles.seeds}>Seeds: {availableSeeds}</Text>
 
       <FlatList
         data={seedOptions}
@@ -118,7 +118,7 @@ export default function PlantScreen() {
             <Text style={styles.name}>{item.name}</Text>
             <Text style={styles.description}>{item.description}</Text>
             <TouchableOpacity style={styles.button} onPress={() => handlePlant(item)}>
-              <Text style={styles.buttonText}>Посадить</Text>
+              <Text style={styles.buttonText}>Planting</Text>
             </TouchableOpacity>
           </View>
         )}
