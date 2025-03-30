@@ -24,7 +24,11 @@ const Layout = () => {
           title: 'My Garden',
           headerShown: true,
           headerLeft: () => (
+
+            <TouchableOpacity onPress={() => alert('Профиль')} style={{ marginLeft: 15 }}>
+
             <TouchableOpacity onPress={() => router.push('/profile')} style={{ marginLeft: 15 }}>
+
               <Ionicons name="person-circle-outline" size={26} color="#3a5f3a" />
             </TouchableOpacity>
           ),

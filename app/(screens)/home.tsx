@@ -161,13 +161,24 @@ useEffect(() => {
     </>
   )}
   renderItem={({ item }) => (
+
+    <TouchableOpacity
+      onPress={() => router.push({ pathname: "/game", params: { plantId: item.id } })}
+      style={{ backgroundColor: "white", borderRadius: 15, marginBottom: 15, padding: 10 }}
+    >
+
     <View style={{ backgroundColor: "white", borderRadius: 15, marginBottom: 15, padding: 10 }}>
+
       {item.image && (
         <Image source={item.image} style={{ width: "100%", height: 120, borderRadius: 10 }} />
       )}
       <Text style={{ fontSize: 18, fontWeight: "bold", marginTop: 10 }}>{item.name}</Text>
       <Text style={{ color: "gray" }}>Sowed {item.date}</Text>
+
+    </TouchableOpacity>
+
     </View>
+
   )}
 />
       <TouchableOpacity

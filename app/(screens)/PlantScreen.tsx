@@ -13,6 +13,7 @@ import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 
+
 const seedOptions: { name: string; image: any; description: string; route: 
   "/ListofPlants/Sunflower" | "/ListofPlants/Cress" | "/ListofPlants/Mint" | "/ListofPlants/Bazilik" | "/ListofPlants/Goroh" }[] = [
     {
@@ -47,6 +48,7 @@ const seedOptions: { name: string; image: any; description: string; route:
     },
   ];
   
+
 
 export default function PlantScreen() {
   const [user, setUser] = useState<User | null>(null);
@@ -109,13 +111,25 @@ export default function PlantScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Available plants</Text>
       <Text style={styles.seeds}>Seeds: {availableSeeds}</Text>
+
+
       
+
       <FlatList
         data={seedOptions}
         keyExtractor={(item) => item.name}
         contentContainerStyle={{ padding: 20 }}
         renderItem={({ item }) => (
           <View style={styles.card}>
+
+            <Image source={item.image} style={styles.image} />
+            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.description}>{item.description}</Text>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handlePlant(item)}
+            >
+
              
             <TouchableOpacity
               onPress={() => router.push(item.route as any)}
@@ -128,11 +142,14 @@ export default function PlantScreen() {
             <Text style={styles.description}>{item.description}</Text>
             
             <TouchableOpacity style={styles.button} onPress={() => handlePlant(item)}>
+
               <Text style={styles.buttonText}>Planting</Text>
             </TouchableOpacity>
           </View>
         )}
       />
+
+
     </View>
   );
 }
